@@ -1,0 +1,59 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Think Share - Share Your Thoughts in Real Time</title>
+    <link rel="stylesheet" href="{% static "index.css" %}">
+    <link rel="shortcut icon" href="{% static "logo.png" %}" type="image/x-icon">
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">Think <span>Share</span></div>
+            <div>
+                <div class="auth-buttons">
+                    <a href="{% url 'signup' %}"><button class="btn btn-primary">Sign up</button></a>
+                    <a href="{% url 'signin' %}"><button class="btn btn-outline">Sign in</button></a>
+                    <button class="theme-toggle" id="themeToggle">🌓</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Think <span>Share</span></h1>
+            <p>Think Share lets you post your thoughts, ideas, and updates in real time on a fast, engaging platform.</p>
+            <a href="{% url 'signin' %}" class="btn cta">Getting Started</a>
+        </div>
+    </section>
+
+    <script>
+        const themeToggle = document.getElementById('themeToggle');
+        const htmlElement = document.documentElement;
+        
+        // Check for saved theme preference or use preferred color scheme
+        const savedTheme = localStorage.getItem('theme') || 
+                          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        
+        // Apply the saved theme
+        htmlElement.setAttribute('data-theme', savedTheme);
+        
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = htmlElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            htmlElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            // Update emoji based on theme
+            themeToggle.textContent = newTheme === 'dark' ? '🌞' : '🌙';
+        });
+        
+        // Set initial emoji based on theme
+        themeToggle.textContent = savedTheme === 'dark' ? '🌞' : '🌙';
+    </script>
+</body>
+</html>

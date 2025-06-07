@@ -1,0 +1,69 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Think Share - Sign In</title>
+    <link rel="stylesheet" href="{% static "signin.css" %}">
+    <link rel="shortcut icon" href="{% static "logo.png" %}" type="image/x-icon">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">Think Share</div>
+            <div class="nav-links">
+                 <button class="theme-toggle" style="  background: none; border: none; cursor: pointer; font-size: 24px;" id="themeToggle">🌓</button>
+                <a href="{% url 'index' %}" class="nav-link">Home</a>
+                <a href="{% url 'signin' %}" class="nav-link active">Sign in</a>
+                <a href="{% url 'signup' %}" class="nav-link">Sign up</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="auth-container">
+            <h1 class="auth-title">Sign in</h1>
+            <form class="auth-form" method='POST'>
+                 {% csrf_token %}
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="auth-button">Sign in</button>
+                <p class="auth-footer">Don't have account, <a href="{% url 'signup' %}">create</a></p>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        const themeToggle = document.getElementById('themeToggle');
+        const htmlElement = document.documentElement;
+        
+        // Check for saved theme preference or use preferred color scheme
+        const savedTheme = localStorage.getItem('theme') || 
+                          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        
+        // Apply the saved theme
+        htmlElement.setAttribute('data-theme', savedTheme);
+        
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = htmlElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            htmlElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            // Update emoji based on theme
+            themeToggle.textContent = newTheme === 'dark' ? '🌞' : '🌙';
+        });
+        
+        // Set initial emoji based on theme
+        themeToggle.textContent = savedTheme === 'dark' ? '🌞' : '🌙';
+    </script>
+</body>
+</html>

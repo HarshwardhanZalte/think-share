@@ -1,0 +1,91 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Think Share - Feed</title>
+    <link rel="stylesheet" href="{% static "home.css" %}" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link rel="shortcut icon" href="{% static "logo.png" %}" type="image/x-icon">
+  </head>
+  <body>
+    <header>
+      <nav class="navbar">
+        <div class="logo">Think Share</div>
+        <div class="nav-actions">
+            <button class="theme-toggle" style="  background: none; border: none; cursor: pointer; font-size: 24px;" id="themeToggle">🌓</button>
+          <a href="{% url 'createpost' %}"><button class="create-post-btn">
+            <i class="fas fa-plus"></i> Create
+          </button></a>
+          <a href="{% url 'logout' %}"><button class="logout-btn">
+            <i class="fas fa-sign-out-alt"></i> Sign Out
+          </button></a>
+        </div>
+      </nav>
+    </header>
+
+    <main class="feed-container">
+      {% for post in posts %}
+      <div class="post">
+        <div class="post-header">
+          <span class="username">{{post.user.username}}</span>
+          {% if request.user == post.user %}
+          <div class="post-actions">
+            <a href="{% url 'editpost' post.id %}"><button class="btn-edit">
+              <i class="fas fa-edit"></i> Edit
+            </button></a>
+            <a href="{% url 'deletepost' post.id %}"><button class="btn-delete">
+              <i class="fas fa-trash-alt"></i> Delete
+            </button></a>
+          </div>
+          {% endif %}
+        </div>
+        {% if post.photo %}
+        <div class="post-image">
+          <img src="{{ post.photo.url }}" alt="Post image" />
+        </div>
+        {% else %}
+        <div class="post-image">
+          
+        </div>
+        {% endif %}
+        <div class="post-content">
+          <h3 class="post-title">{{post.title}}</h3>
+          <span class="post-time">{{post.created_at}}</span>
+        </div>
+        <p style="margin: 15px; margin-top: 3px">{{post.content}}</p>
+      </div>
+      {% endfor %}
+    </main>
+
+    <script>
+        const themeToggle = document.getElementById('themeToggle');
+        const htmlElement = document.documentElement;
+        
+        // Check for saved theme preference or use preferred color scheme
+        const savedTheme = localStorage.getItem('theme') || 
+                          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        
+        // Apply the saved theme
+        htmlElement.setAttribute('data-theme', savedTheme);
+        
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = htmlElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            htmlElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            // Update emoji based on theme
+            themeToggle.textContent = newTheme === 'dark' ? '🌞' : '🌙';
+        });
+        
+        // Set initial emoji based on theme
+        themeToggle.textContent = savedTheme === 'dark' ? '🌞' : '🌙';
+    </script>
+  </body>
+</html>
